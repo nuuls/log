@@ -1,5 +1,5 @@
 # log
-go logging library 
+go logging library
 
 [![godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/nuuls/log)
 ```go
@@ -45,8 +45,6 @@ console output:
 <img src="https://i.nuuls.com/-lSD.png">
 
 test.log:
-```json 
-{"level":5,"levelString":"DEBU","time":"2016-10-23T19:02:36.6526974+02:00","caller":"test/test.go:32","text":"test 123"}
-{"level":4,"levelString":"INFO","time":"2016-10-23T19:02:36.6546977+02:00","caller":"test/test.go:33","text":"Kappa 123"}
-{"level":2,"levelString":"ERRO","time":"2016-10-23T19:02:36.6551974+02:00","caller":"test/test.go:34","text":"error"}
+```json
+{"level":2,"levelString":"ERRO","time":"2016-10-23T19:09:32.9616278+02:00","caller":"test/test.go:34","text":"error"}
 ```

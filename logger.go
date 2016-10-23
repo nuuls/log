@@ -17,6 +17,9 @@ type Logger struct {
 }
 
 func (l *Logger) Log(m *Message) {
+	if m.Level > l.Level {
+		return
+	}
 	var bs []byte
 	if l.MarshalFunc != nil {
 		var err error
