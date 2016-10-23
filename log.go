@@ -7,12 +7,11 @@ import (
 	"time"
 )
 
-// Import var _ = log.Import() to avoid goimports to import "log"
+// Import can be used to prevent goimports from importing "log"
+// var _ = log.Import()
 func Import() struct{} {
 	return struct{}{}
 }
-
-const callerStrLen = 35
 
 // Level xd
 type Level int
@@ -60,6 +59,8 @@ var (
 	Stack Level = LevelError
 
 	Loggers = []*Logger{}
+
+	CallerStrLen = 35
 )
 
 func AddLogger(l *Logger) {
@@ -98,7 +99,7 @@ func NewMessage(level Level, a ...interface{}) *Message {
 }
 
 func (m *Message) String() string {
-	cLen := callerStrLen - len(m.Caller)
+	cLen := CallerStrLen - len(m.Caller)
 	if cLen < 1 {
 		cLen = 1
 	}
