@@ -24,27 +24,36 @@ func main() {
 
 	file, err := os.OpenFile("test.log", os.O_CREATE|os.O_APPEND, 666)
 	if err != nil {
-		log.Fatal(err)
+		log.Critical(err)
 	}
-	jsonLogger := &log.Logger{
+	var jsonLogger *log.Logger
+	jsonLogger = &log.Logger{
 		Level:        log.LevelError,
 		Stdout:       file,
 		Stderr:       file,
 		DefaultLevel: log.LevelError,
-		MarshalFunc:  json.Marshal,
+		Marshal:      json.Marshal,
+		LogFunc: func(m *log.Message) error {
+			err := jsonLogger.DefaultLogFunc(m)
+			if err != nil {
+				logger.Log(log.NewMessage(log.LevelCritical, "cannot write to file test.log:", err))
+			}
+			return nil
+		},
 	}
 	log.AddLogger(jsonLogger)
-	log.Debug("test 123")
-	log.Infof("%s 123", "Kappa")
+	log.Debug("debug")
+	log.Infof("%s infof", "test")
 	log.Error("error")
+	log.Fatal("fatal")
 }
-
   ```
 console output:
 
-<img src="https://i.nuuls.com/-lSD.png">
+<img src="https://i.nuuls.com/a4jE.png">
 
 test.log:
 ```json
-{"level":2,"levelString":"ERRO","time":"2016-10-23T19:09:32.9616278+02:00","caller":"test/test.go:34","text":"error"}
+{"level":2,"levelString":"ERRO","time":"2016-10-24T14:18:08.483591+02:00","caller":"test/test.go:42","text":"error"}
+{"level":0,"levelString":"FATAL","time":"2016-10-24T14:18:08.4840918+02:00","caller":"test/test.go:43","text":"fatal"}
 ```
