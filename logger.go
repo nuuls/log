@@ -7,29 +7,40 @@ import (
 	"github.com/fatih/color"
 )
 
+type LoggerFunc func(m *Message) error
+type MarshalFunc func(interface{}) ([]byte, error)
+
 type Logger struct {
 	Stdout       io.Writer
 	Stderr       io.Writer
 	Level        Level
 	DefaultLevel Level
 	Color        bool
-	MarshalFunc  func(interface{}) ([]byte, error)
+	Marshal      MarshalFunc
+	LogFunc      LoggerFunc
 }
 
-func (l *Logger) Log(m *Message) {
+func (l *Logger) Log(m *Message) error {
 	if m.Level > l.Level {
-		return
+		return nil
 	}
+	if l.LogFunc != nil {
+		return l.LogFunc(m)
+	}
+	return l.DefaultLogFunc(m)
+}
+
+func (l *Logger) DefaultLogFunc(m *Message) error {
 	var bs []byte
-	if l.MarshalFunc != nil {
+	if l.Marshal != nil {
 		var err error
 		_m := *m
 		if strings.HasSuffix(m.Text, "\n") {
 			_m.Text = m.Text[:len(m.Text)-1]
 		}
-		bs, err = l.MarshalFunc(_m)
+		bs, err = l.Marshal(_m)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		bs = append(bs, '\n')
 	} else {
@@ -55,14 +66,15 @@ func (l *Logger) Log(m *Message) {
 	if m.Level < LevelInfo {
 		_, err := l.Stderr.Write(bs)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	} else {
 		_, err := l.Stdout.Write(bs)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // Write always returns 0, nil
