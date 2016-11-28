@@ -63,6 +63,7 @@ var (
 	CallerStrLen = 35
 )
 
+// AddLogger appends a logger
 func AddLogger(l *Logger) {
 	if l.Stderr == nil {
 		if l.Stdout == nil {
@@ -77,12 +78,14 @@ func AddLogger(l *Logger) {
 }
 
 type Message struct {
-	Level       Level     `json:"level"`
-	LevelString string    `json:"levelString"`
-	Time        time.Time `json:"time"`
-	Caller      string    `json:"caller"`
-	Stack       string    `json:"stack,omitempty"`
-	Text        string    `json:"text"`
+	Service     string                 `json:"service"`
+	Level       Level                  `json:"level"`
+	LevelString string                 `json:"levelString"`
+	Time        time.Time              `json:"time"`
+	Caller      string                 `json:"caller"`
+	Stack       string                 `json:"stack,omitempty"`
+	Text        string                 `json:"text"`
+	Fields      map[string]interface{} `json:"fields,omitempty"`
 	args        []interface{}
 }
 
